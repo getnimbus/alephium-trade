@@ -13,6 +13,11 @@
     "declaration": true,
     "sourceMap": true,
     "resolveJsonModule": true,
+    "paths": {
+      "src/*": ["./src/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"]
+    },
   },
   "include": ["src", "test"],
   "exclude": ["dist", "bundle", "node_modules"],
