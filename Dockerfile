@@ -1,16 +1,32 @@
-FROM node:18-alpine
+# Build stage
+FROM node:22-alpine AS builder
 
 WORKDIR /opt/nimbus
 
-COPY package.json .
-COPY yarn.lock .
+# Copy package files
+COPY package.json yarn.lock ./
+COPY prisma/schema.prisma prisma/schema.prisma
 
-RUN corepack enable
-RUN yarn
+# Install dependencies
+RUN corepack enable && yarn install --frozen-lockfile
 
+# Copy source code
 COPY . .
-RUN yarn install
+
+# Build application
 RUN yarn build
+
+# Production stage
+FROM node:22-alpine
+
+WORKDIR /opt/nimbus
+
+# Copy package files and install only production dependencies
+COPY package.json yarn.lock ./
+RUN corepack enable && yarn install --frozen-lockfile --production
+
+# Copy built application from builder stage
+COPY --from=builder /opt/nimbus/dist ./dist
 
 EXPOSE 3000
 
