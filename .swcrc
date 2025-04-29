@@ -12,6 +12,8 @@
     "paths": {
       "src/*": ["./src/*"],
       "@services/*": ["src/services/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@configs/*": ["src/configs/*"],
       "@utils/*": ["src/utils/*"]
     },
     "baseUrl": "."

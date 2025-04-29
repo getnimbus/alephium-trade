@@ -18,9 +18,11 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "run-p build:watch start:watch | pino-pretty",
+    "dev:server": "run-p build:watch start:server | pino-pretty",
     "build": "swc src -d dist --copy-files",
     "build:watch": "swc src -d dist --copy-files --watch",
     "start": "dotenv -- node dist/src/index.js",
+    "start:server": "dotenv -- node dist/src/server.js",
     "start:watch": "dotenv -- nodemon dist/src/index.js",
     "clean": "rimraf dist",
     "format": "prettier . --write",
@@ -33,7 +35,10 @@
     "@swc/cli": "^0.4.0",
     "@swc/core": "^1.7.18",
     "@tsconfig/node20": "20.1.4",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
     "@types/node": "20.12.7",
+    "@types/node-cron": "^3.0.11",
     "@types/nodemon": "1.19.6",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
@@ -50,11 +55,25 @@
     "typescript": "5.4.5"
   },
   "dependencies": {
+    "@alephium/web3": "^1.11.6",
     "@prisma/adapter-pg": "^6.6.0",
     "@prisma/client": "^6.6.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "axios": "^1.9.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
     "kafkajs": "^2.2.4",
     "kafkajs-snappy": "^1.1.0",
+    "lossless-json": "^4.0.2",
+    "node-cron": "^3.0.3",
+    "pg": "^8.15.6",
     "pino": "^9.6.0",
-    "prisma": "^6.6.0"
+    "prisma": "^6.6.0",
+    "rate-limit-redis": "^4.2.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuidv7": "^1.0.2"
   }
 }

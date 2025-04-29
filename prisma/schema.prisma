@@ -11,7 +11,7 @@ datasource db {
 
 model Trade {
   id                    String   @db.VarChar
-  block                 Int
+  block                 String   @db.VarChar
   tx_hash               String
   from_token_address    String
   to_token_address      String
@@ -37,7 +37,7 @@ model Trade {
   @@index([from_token_address])
   @@index([sender_address, timestamp])
   @@index([origin_sender_address])
-  @@map("trade")
+  @@map("trade_alephium")
 }
 
 model Pool {
@@ -58,18 +58,25 @@ model Pool {
   @@map("pool")
 }
 
-model Tokens {
-  id             String    @id @default(uuid()) @db.VarChar
-  token_address  String    @db.VarChar
-  token_symbol   String?   @db.VarChar
-  token_name     String?   @db.VarChar
-  token_decimals Int
-  chain          String    @db.VarChar
-  logo           String?   @db.VarChar
-  created_at     DateTime  @default(now())
-  updated_at     DateTime? @updatedAt
+model AlephiumPriceFeed {
+  id               String @id @default(uuid()) @db.VarChar
+  contract_address String @db.VarChar
+  price            Float
+  timestamp        BigInt
 
-  @@unique([chain, token_address])
-  @@index([chain])
+  @@index([contract_address, timestamp])
+  @@map("alephium_price_feed")
+}
+
+model Token {
+  id            String  @id @default(uuid())
+  tokenAddress  String  @unique @map("token_address")
+  tokenSymbol   String  @map("token_symbol")
+  tokenName     String  @map("token_name")
+  tokenDecimals Int     @map("token_decimals")
+  logo          String?
+  chain         String
+
+  @@unique([tokenAddress, chain])
   @@map("tokens")
 }

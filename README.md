@@ -1,180 +1,123 @@
-# Node.js Typescript Modern Starter
+# Alephium Trade - Index Swap Trade Data Pricing
 
-While developing with Typescript and Node.js is awesome, **setting up a new
-project is painful**.
-This minimal and modern starter repo is here to help you get started with
-Node.js and Typecript without the pain.
+This project provides tools and services for managing and analyzing index swap trade data for pricing purposes on Alephium Chain
 
-## Overview
+## Features
 
-This starter uses a bare-bones and minimal approach to get anyone up and
-running with a new project in no time. It provides:
-
-- Typescript 5 with a strict tsconfig.
-- Yarn/Npm scripts ready to do everything you commonly need. Supporting `compile`,
-  `clean`, `test`, `bundle`, `dev` and `start`. These scripts are created to be
-  compatible with the operating systems linux, macos and windows.
-- Github Actions in place runnung with current node LTS version (20) on linux,
-  macos and windows to automatically (for each PR):
-  - test the code
-  - compile the codebase from ts to js
-  - check for formatting issues
-  - check for linting issues
-- Testing via the new Node.js [test
-  runner](https://nodejs.org/api/test.html#test-runner) instead of something
-  like mocha or jest.
-- Formatting via [prettier](https://prettier.io/).
-- Linting via [eslint](https://eslint.org/) and
-  [typescript-eslint](https://typescript-eslint.io/)
-- Bundling via [esbuild](https://esbuild.github.io/), a fast bundler that "just
-  works" and is nowadays even used in the typescript codebase.
-- Debugging set up with examples for vscode and vim.
-- Automated dependency updates via
-  [renovate](https://github.com/renovatebot/renovate).
-- Using the current LTS, nodejs 20
-
-#### Project Goals
-
-- Help you to just **get started** with a Node.js Typescript setup and **not
-  worry about configuration**.
-- All scripts compatible with linux, macos and windows.
-- No magic. Everything kept as simple as possible while configuring anything you
-  might need.
-- Advocate for **testing your code**. The common approaches of _tests and code
-  side by side_ as well as _all tests in a seperate folder_ already working and
-  set up for you.
-- Advocate for **using CI/CD** (in this case Github Actions). Automatically
-  check formatting, check linting, compile and test the code base. Everything running
-  on each PR.
-- Advocate establishing best practices via linting rules using eslint and
-  typescript-eslint. However, still giving a documented way to quickly and
-  easily disable them, if that is preferred.
-- Use modern tools like esbuild, typescript 5 and the nodejs test runner.
-- Be open for any framework or library that you prefer. This setup should be
-  useful to everyone. You can easily add your preferred packages in no time.
+- Index swap trade data
+- Discovery new pools and tokens
+- Real-time pricing calculations
+- Token price API server for real-time price queries
 
 ## Prerequisites
 
-- [nvm](https://github.com/nvm-sh/nvm) (or something like
-  [nvm-windows](https://github.com/coreybutler/nvm-windows) if you are on
-  windows)
+- Node.js 22 or above
 
 ## Quickstart
 
-- Clone the repo `git clone git@github.com:xddq/nodejs-typescript-modern-starter`
-- Remove the .git folder `cd nodejs-typescript-modern-starter && rm -rf .git`
-- (optional) Update the package.json name, author, keywords, etc..
-- Set up your own git folder and create your first commit. Run `git init && git
-add . && git commit -am "initial commit"`
-- (optional) Set up the git hook for formatting your code. `cp
-.git-hooks/pre-commit .git/hooks/pre-commit`. For windows you need to use
-  [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to use this.
-- Use the node version specified in .nvmrc `nvm install && nvm use` (on windows you need to specify the node version in the command)
-- Enable corepack and update yarn `corepack enable`
-- Install dependencies `yarn`
-- You're done🎉 What about you try running the tests? Run `yarn test`. See the
-  section below for all available commands together with their explanation.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/getnimbus/alephium-trade
+   cd alephium-trade
+   ```
 
-## Scripts and their explanation
+2. Install dependencies:
+   ```bash
+   yarn
+   ```
 
-All scripts can be found inside the package.json file under the "scripts"
-attribute.
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-- `yarn bundle` -> Bundles the whole code into a single javascript file which
-  will be stored inside the dist folder. For prod deployments you typically just
-  copy this file somewhere and then run something like `node --enable-source-maps
-./index.js`.
-- `yarn clean` -> Removes bundled files by deleting the dist folder. Normally
-  there is no need to invoke this manually.
-- `yarn compile` -> Runs the typescript compiler against the typescript
-  codebase. Displays any errors if they occur.
-- `yarn compile-watch` -> Runs the typescript compiler every time you make
-  changes to a file. It is good to open this in another terminal while
-  developing to spot typescript issues.
-- `yarn dev` -> This should be used for running the code while developing. It
-  watches all changes you make to your typescript codebase and automatically
-  rebuilds the project. It does also watch all changes made to the built project
-  and restarts the code whenever changes are detected. This enables a quick
-  feedback loop.
-- `yarn format` -> Formats the code using prettier.
-- `yarn format-check` -> Checks for formatting errors using prettier. This is
-  typically only invoked by the CI/CD pipeline.
-- `yarn lint` -> Lints the code using eslint. Fixes problems that are
-  auto-fixable and reports the rest of them to you.
-- `yarn lint-check` -> Checks for linting errors using eslint. This is typically
-  only invoked by the CI/CD pipeline.
-- `yarn start` -> Runs the code. This only works if the code was bundled before ;).
-- `yarn test` -> Tests your codebase. Basic tests are created for both major
-  approaches of putting tests beside the source code as well as putting tests in
-  a seperate folder.
+4. Build service
+   ```bash
+   yarn build
+   ```
 
-## Debugging
+5. Start consumer worker
+   ```bash
+   yarn start
+   ```
 
-An enourmous amount of people default to `console log debugging` since
-understanding the setup for debugging typescript can be somewhat awful and
-painful. This repo provides a debug config and guide ready to use for
-[vscode](git@github.com:microsoft/vscode.git) and for vim using
-[vimspector](https://github.com/puremourning/vimspector). Both use the mostly
-DAP compliant debugger
-[vscode-js-debug](https://github.com/microsoft/vscode-js-debug).
+6. Start pricing server
+   ```bash
+   yarn start:server
+   ```
 
-### Debugging Code
+## Development
 
-#### Vim
+### Project Structure
 
-- Start the node process with inspect-brk `yarn compile && node --inspect-brk ./dist/src/index.js` in one terminal.
-- Open src/index.ts `vim ./src/index.ts` in another terminal.
-- Set breakpoint in line 6 (F9 is the default mapping)
-- Start vimspector by pressing F5
-- Press F5 again, should see the console.log output
-- Done🎉
+```
+alephium-trade/
+├── src/                    # Source code
+│   ├── configs/            # Configuration files
+│   ├── controllers/        # API controllers
+│   ├── executors/          # Task executors
+│   ├── services/           # External services
+│   ├── utils/              # Utility functions
+│   ├── index.ts            # Indexing worker
+│   └── server.ts           # Api server
+├── prisma/                # Database schema and migrations
+```
 
-#### Vscode
+### Contributing
 
-- Open code, set a breakpoint in src/index.ts and just start debugging with F5.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Debugging Tests
+## License
 
-#### Vim
+MIT License
 
-- Start the node process with inspect-brk `yarn compile && node --inspect-brk --test --test-reporter spec` in one terminal.
-- Open src/index.ts `vim ./src/hello.test.ts` in another terminal.
-- Set breakpoint in line 8 (F9 is the default mapping)
-- Start vimspector by pressing F5
-- You should see the first console log already "testing returnHelloWorld()"
-- Press F5 again, should see the second console.log "Done"
-- Done🎉
+Copyright (c) 2024 Nimbus
 
-#### Vscode
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-- Open code and set a breakpoint in /src/hello.test.ts.
-- Go to the package.json in the 'scripts' sections, click on 'debug' and select 'test'.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-## Linting
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-This repo has [eslint](https://eslint.org/) and
-[typescript-eslint](https://typescript-eslint.io/) as well as an automated
-Github Action to check for linting set up and ready to go.
+## Support
 
-The rules in this project are my personal preference and reflect a subset of the
-recommended options. They also include a lot of the more strict options (NOT
-included in the recommended ones). My goal is to simplify having a consistent
-code base/code style, to avoid catchable bugs early and advocate for usage of
-newer features of the language.
+For support, please contact toanbk21096@gmail.com
 
-However, I made it **dead simple** to enable the default/recommended eslint
-rules, if you want to use them instead. Everything is documented, just browse to
-[./.eslintrc.cjs](https://github.com/xddq/nodejs-typescript-modern-starter/blob/main/.eslintrc.cjs)
-and adapt the code.
+## API Documentation
 
-## Automated Dependency Updates
+### Token Price API
 
-After using this repo (either via the github template or by simply cloning it)
-you have to set up a renovate bot. For github this can easily be done via the
-Github Apps [renovate](https://github.com/apps/renovate) as well as
-[renovate-approve](https://github.com/apps/renovate-approve). To be able to the
-mimic the approach used in this repo, you should set up:
+The API server provides endpoints to query token prices:
 
-- the repo setting to allow auto-merge
-- a branch protection rule for the main branch to require approval (will be
-  handled via renovate-approve)
+- `GET /api/prices?address=...` - Get current price for a specific token
+
+Example response:
+```json
+{
+  "id": "1a281053ba8601a658368594da034c2e99a0fb951b86498d05e76aedfe666800",
+  "address": "vT49PY8ksoUL6NcXiZ1t2wAmC7tTPRfFfER8n3UCLvXy",
+  "name": "AYIN",
+  "symbol": "AYIN",
+  "decimals": 18,
+  "logo": "https://raw.githubusercontent.com/alephium/token-list/master/logos/AYIN.png",
+  "price": 0.327885697388336,
+  "timestamp": "1745898351000"
+}
+```
