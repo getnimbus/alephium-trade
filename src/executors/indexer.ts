@@ -121,10 +121,12 @@ export const consumeAlephiumEvents = async () => {
               ],
               skipDuplicates: true,
             });
+
+            logger.info(
+              `Consumed swap trade ${payload.message.key?.toString() || ""}`
+            );
           }
         }
-
-        logger.info(`Consumed ${payload.message.key?.toString() || ""}`);
       } catch (err) {
         logger.error(err);
       }
