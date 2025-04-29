@@ -18,6 +18,7 @@
       "src/*": ["./src/*"],
       "@services/*": ["src/services/*"],
       "@controllers/*": ["src/controllers/*"],
+      "@executors/*": ["src/executors/*"],
       "@configs/*": ["src/configs/*"],
       "@utils/*": ["src/utils/*"]
     },

@@ -27,6 +27,7 @@ COPY prisma/schema.prisma prisma/schema.prisma
 
 # Install production dependencies
 RUN corepack enable && yarn install --frozen-lockfile --production
+RUN yarn global add dotenv-cli
 
 # Copy built application from builder stage
 COPY --from=builder /opt/nimbus/dist ./dist
