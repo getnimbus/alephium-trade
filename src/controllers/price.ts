@@ -1,19 +1,28 @@
 import { Request, Response } from "express";
 import { prisma } from "@services/prisma";
 import { getOrSet } from "@services/redis";
-import { binToHex, contractIdFromAddress } from "@alephium/web3";
+import {
+  addressFromContractId,
+  binToHex,
+  contractIdFromAddress,
+} from "@alephium/web3";
 import logger from "@utils/logger";
 
 export const getTokenPriceHandler = async (req: Request, res: Response) => {
   try {
     const address = String(req.query.address || "");
-    if (!address) {
-      return res.status(400).json({ error: "Contract address is required" });
+    const contractId = String(req.query.contractId || "");
+    if (!address && !contractId) {
+      return res
+        .status(400)
+        .json({ error: "Contract address or contract id is required" });
     }
+
+    const queryAddress = address || addressFromContractId(contractId);
 
     const [prices, tokenInfo] = await Promise.all([
       getOrSet(
-        `ALPH-token-price:${address}`,
+        `ALPH-token-price:${queryAddress}`,
         async () => {
           return await prisma.alephiumPriceFeed.findMany({
             select: {
@@ -21,7 +30,7 @@ export const getTokenPriceHandler = async (req: Request, res: Response) => {
               timestamp: true,
             },
             where: {
-              contract_address: address,
+              contract_address: queryAddress,
             },
             orderBy: {
               timestamp: "desc",
@@ -32,11 +41,11 @@ export const getTokenPriceHandler = async (req: Request, res: Response) => {
         5 * 60 // 5 mins
       ),
       getOrSet(
-        `ALPH-token-info:${address}`,
+        `ALPH-token-info:${queryAddress}`,
         async () => {
           return await prisma.token.findFirst({
             where: {
-              tokenAddress: address,
+              tokenAddress: queryAddress,
               chain: "ALPH",
             },
           });

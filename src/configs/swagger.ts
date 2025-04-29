@@ -31,11 +31,20 @@ const swaggerOptions = {
             {
               in: "query",
               name: "address",
-              required: true,
+              required: false,
               schema: {
                 type: "string",
               },
               description: "The contract address of the token",
+            },
+            {
+              in: "query",
+              name: "contractId",
+              required: false,
+              schema: {
+                type: "string",
+              },
+              description: "The contract id of the token",
             },
           ],
           responses: {
