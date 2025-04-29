@@ -14,6 +14,7 @@ BigInt.prototype.toJSON = function () {
 
 const app = express();
 const port = process.env.PORT || 3000;
+const SHUTDOWN_TIMEOUT = 10_000; // 10 seconds
 
 app.set("trust proxy", 1);
 
@@ -51,7 +52,48 @@ setupSwagger(app);
 app.get("/api/prices", getTokenPriceHandler);
 
 // Start server
-app.listen(port, () => {
+const server = app.listen(port, () => {
   logger.info(`Server running on port ${port}`);
   logger.info(`Swagger docs available at http://localhost:${port}/api-docs`);
+});
+
+// Graceful shutdown
+const signals = ["SIGTERM", "SIGINT"] as const;
+
+const gracefulShutdown = async (signal: (typeof signals)[number]) => {
+  console.log(`Received ${signal}. Starting graceful shutdown...`);
+
+  // Set a timeout to force exit if graceful shutdown takes too long
+  const timeout = setTimeout(() => {
+    console.error("Graceful shutdown timeout reached. Forcing exit...");
+    process.exit(1);
+  }, SHUTDOWN_TIMEOUT);
+
+  try {
+    // Close the server
+    await new Promise<void>((resolve, reject) => {
+      server.close((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+
+    clearTimeout(timeout);
+    console.log("Server closed successfully");
+    process.exit(0);
+  } catch (err) {
+    clearTimeout(timeout);
+    console.error("Error during shutdown:", err);
+    process.exit(1);
+  }
+};
+
+// Register signal handlers
+signals.forEach((signal) => {
+  process.on(signal, () => {
+    gracefulShutdown(signal);
+  });
 });
