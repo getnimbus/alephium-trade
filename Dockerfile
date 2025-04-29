@@ -23,6 +23,9 @@ WORKDIR /opt/nimbus
 
 # Copy package files and install only production dependencies
 COPY package.json yarn.lock ./
+COPY prisma/schema.prisma prisma/schema.prisma
+
+# Install production dependencies
 RUN corepack enable && yarn install --frozen-lockfile --production
 
 # Copy built application from builder stage
