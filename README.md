@@ -12,6 +12,9 @@ This project provides tools and services for managing and analyzing index swap t
 ## Prerequisites
 
 - Node.js 22 or above
+- Postgres
+- Kafka
+- Fetching onchain data [https://github.com/getnimbus/alephium-indexer]
 
 ## Quickstart
 
