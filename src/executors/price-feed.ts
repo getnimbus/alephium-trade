@@ -46,10 +46,11 @@ const calculatePriceData = async () => {
           timestamp
         FROM trade_alephium
         WHERE chain = 'ALPH'
-        AND amount_usd > 10
+        AND amount_usd > 0
         AND quanlity_out > 0
-        AND timestamp BETWEEN NOW() - INTERVAL '120 SECOND' AND NOW()
-        ORDER BY timestamp DESC
+        AND quanlity_in > 0
+        AND "timestamp" BETWEEN NOW() - INTERVAL '5 MINUTE' AND NOW()
+        ORDER BY "timestamp" DESC
       ),
       token_data AS (
         SELECT

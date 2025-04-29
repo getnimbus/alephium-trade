@@ -93,8 +93,7 @@ export const consumeAlephiumEvents = async () => {
               Number(message?.fields?.[4]?.value || 0) /
                 10 ** Number(poolInfo.token1Decimal || 18);
             const amount_usd =
-              from_token_address ===
-              "0000000000000000000000000000000000000000000000000000000000000000"
+              from_token_address === NATIVE_TOKEN_ADDRESS
                 ? quanlity_in * nativePrice
                 : quanlity_out * nativePrice;
 
