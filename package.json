@@ -19,7 +19,7 @@
     "postinstall": "prisma generate",
     "dev": "run-p build:watch start:watch | pino-pretty",
     "dev:server": "run-p build:watch start:server | pino-pretty",
-    "build": "swc src -d dist --copy-files",
+    "build": "rm -rf dist && swc src -d dist --copy-files",
     "build:watch": "swc src -d dist --copy-files --watch",
     "start": "dotenv -- node dist/src/index.js",
     "start:server": "dotenv -- node dist/src/server.js",

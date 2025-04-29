@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
+    "removeComments": false,
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",

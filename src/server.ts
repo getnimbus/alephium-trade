@@ -3,11 +3,10 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import { RedisStore } from "rate-limit-redis";
 import { getRedisClient } from "@services/redis";
+import { setupSwagger } from "@configs/swagger";
 import { getTokenPriceHandler } from "@controllers/price";
-import { swaggerSpec } from "@configs/swagger";
 import cors from "cors";
 import logger from "@utils/logger";
-import swaggerUi from "swagger-ui-express";
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -40,15 +39,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(limiter);
 
-// Serve api docs
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 // Health check endpoint
 app.get("/", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Get latest token prices
+// Setup Swagger
+setupSwagger(app);
+
+// Routes
 app.get("/api/prices", getTokenPriceHandler);
 
 // Start server

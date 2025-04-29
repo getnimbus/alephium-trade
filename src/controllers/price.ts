@@ -4,56 +4,6 @@ import { getOrSet } from "@services/redis";
 import { binToHex, contractIdFromAddress } from "@alephium/web3";
 import logger from "@utils/logger";
 
-/**
- * @swagger
- * /api/prices:
- *   get:
- *     summary: Get token price and information
- *     description: Returns the latest price and information for a specific Alephium token
- *     parameters:
- *       - in: query
- *         name: address
- *         required: true
- *         schema:
- *           type: string
- *         description: The contract address of the token
- *     responses:
- *       200:
- *         description: Token price and information
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   description: Contract ID in hex format
- *                 address:
- *                   type: string
- *                   description: Token contract address
- *                 name:
- *                   type: string
- *                   description: Token name
- *                 symbol:
- *                   type: string
- *                   description: Token symbol
- *                 decimals:
- *                   type: number
- *                   description: Token decimals
- *                 logo:
- *                   type: string
- *                   description: Token logo URL
- *                 price:
- *                   type: number
- *                   description: Latest token price
- *                 timestamp:
- *                   type: number
- *                   description: Price timestamp
- *       400:
- *         description: Bad request - contract address is required
- *       500:
- *         description: Internal server error
- */
 export const getTokenPriceHandler = async (req: Request, res: Response) => {
   try {
     const address = String(req.query.address || "");
