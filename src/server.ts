@@ -3,6 +3,7 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import { RedisStore } from "rate-limit-redis";
 import { getRedisClient } from "@services/redis";
+import { prisma } from "@services/prisma";
 import { setupSwagger } from "@configs/swagger";
 import { getTokenPriceHandler } from "@controllers/price";
 import cors from "cors";
@@ -57,43 +58,56 @@ const server = app.listen(port, () => {
   logger.info(`Swagger docs available at http://localhost:${port}/api-docs`);
 });
 
-// Graceful shutdown
-const signals = ["SIGTERM", "SIGINT"] as const;
+// Graceful shutdown logic
+const shutdown = async () => {
+  logger.info("Starting graceful shutdown...");
 
-const gracefulShutdown = async (signal: (typeof signals)[number]) => {
-  console.log(`Received ${signal}. Starting graceful shutdown...`);
-
-  // Set a timeout to force exit if graceful shutdown takes too long
+  // set a timeout to force exit if graceful shutdown takes too long
   const timeout = setTimeout(() => {
-    console.error("Graceful shutdown timeout reached. Forcing exit...");
+    logger.error("Graceful shutdown timeout reached. Forcing exit...");
     process.exit(1);
   }, SHUTDOWN_TIMEOUT);
 
   try {
-    // Close the server
-    await new Promise<void>((resolve, reject) => {
-      server.close((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
+    // close express server
+    server.close(() => {
+      logger.info("HTTP server closed.");
     });
 
+    await Promise.all([
+      // close redis connection
+      getRedisClient()
+        .then((client) => {
+          client.quit();
+        })
+        .then(() => {
+          logger.info("redis disconnected successfully");
+        })
+        .catch((err) => {
+          logger.error(err);
+        }),
+      // close db connection
+      prisma
+        .$disconnect()
+        .then(() => {
+          logger.info("db disconnected successfully");
+        })
+        .catch((err) => {
+          logger.error(err);
+        }),
+    ]);
+
+    // exit process
     clearTimeout(timeout);
-    console.log("Server closed successfully");
+    logger.info("Server closed successfully");
     process.exit(0);
   } catch (err) {
     clearTimeout(timeout);
-    console.error("Error during shutdown:", err);
+    logger.error("Error during shutdown:", err);
     process.exit(1);
   }
 };
 
-// Register signal handlers
-signals.forEach((signal) => {
-  process.on(signal, () => {
-    gracefulShutdown(signal);
-  });
-});
+// listen for termination signals
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
